@@ -1,0 +1,4 @@
+repeat 3 [fd 50 lt 120] - Triangle
+repeat 4 [fd 50 rt 90] - Square
+repeat 5 [fd 50 rt 72] - Pentagon
+repeat X [fd 500/X rt 360/X] - ALL SHAPES

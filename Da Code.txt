@@ -1,0 +1,1898 @@
+*******************TRANSPARENCY*********************
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NextGen
+{
+    class Transparency
+    {
+        float[] SWrap = new float[6]; //List of transparency values
+
+        public Transparency (float alpha, float beta, float gamma, float delta, float epsilon, float zeta)
+        {//CREATE NEW TRANSPARENCY
+            SWrap[0] = alpha;
+            SWrap[1] = beta;
+            SWrap[2] = gamma;
+            SWrap[3] = delta;
+            SWrap[4] = epsilon;
+            SWrap[5] = zeta;
+        }
+        public Transparency(float alpha)
+        {//CREATE NEW TRANSPARENCY
+            SWrap[0] = alpha;
+            SWrap[1] = alpha;
+            SWrap[2] = alpha;
+            SWrap[3] = alpha;
+            SWrap[4] = alpha;
+            SWrap[5] = alpha;
+        }
+        public float getTop()
+        {//RETURN TOP VALUE
+            return SWrap[0];
+        }
+
+        public float getBottom()
+        {//RETURN BOTTOM VALUE
+            return SWrap[1];
+        }
+
+        public float getFront()
+        {//RETURN FRONT VALUE
+            return SWrap[2];
+        }
+
+        public float getBack()
+        {//RETURN BACK VALUE
+            return SWrap[3];
+        }
+
+        public float getLeft()
+        {//RETURN LEFT VALUE
+            return SWrap[4];
+        }
+
+        public float getRight()
+        {//RETURN RIGHT VALUE
+            return SWrap[5];
+        }
+    }
+}
+*****************************************TEXTURE&*******************************
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using OpenTK;
+using OpenTK.Input;
+using OpenTK.Graphics.OpenGL;
+using System.Drawing;
+using System.Drawing.Imaging;   // For BitmMapData type
+
+namespace NextGen
+{
+    class Texture
+    {
+        int[] skins = new int[6];
+        //Path to resources
+        private string path = "C:\\Users\\Mishko\\Dropbox\\Programing\\NextGen\\Current version\\DTView\\WindowsFormsApplication4\\Resources\\";
+          
+        public Texture(String Top, String Bottom, String Front, String Back, String Left, String Right){
+            //Multi Textured Object
+            skins[0] = UploadTexture(path + Top + ".png");
+            skins[1] = UploadTexture(path + Bottom + ".png");
+            skins[2] = UploadTexture(path + Front + ".png");
+            skins[3] = UploadTexture(path + Back + ".png");
+            skins[4] = UploadTexture(path + Left + ".png");
+            skins[5] = UploadTexture(path + Right + ".png");
+
+        }
+        public Texture(String Image)
+        {//Single Textured Object
+            String temp = path + Image + ".png";
+            skins[0] = UploadTexture(path + Image + ".png");
+            skins[1] = UploadTexture(path + Image + ".png");
+            skins[2] = UploadTexture(path + Image + ".png");
+            skins[3] = UploadTexture(path + Image + ".png");
+            skins[4] = UploadTexture(path + Image + ".png");
+            skins[5] = UploadTexture(path + Image + ".png");
+
+        }
+
+        public int getTop()
+        {
+            return skins[0];
+        }
+
+        public int getBottom()
+        {
+            return skins[1];
+        }
+
+        public int getFront()
+        {
+            return skins[2];
+        }
+
+        public int getBack()
+        {
+            return skins[3];
+        }
+
+        public int getLeft()
+        {
+            return skins[4];
+        }
+
+        public int getRight()
+        {
+            return skins[5];
+        }
+        static public int UploadTexture(string pathname)
+        {// Create a new OpenGL texture object
+
+            int id = GL.GenTexture();
+
+            // Select the new texture
+            GL.BindTexture(TextureTarget.Texture2D, id);
+
+            // Load the image
+            Bitmap bmp = new Bitmap(pathname);
+
+            // Lock image data to allow direct access
+            BitmapData bmp_data = bmp.LockBits(
+                    new Rectangle(0, 0, bmp.Width, bmp.Height),
+                    System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            // Import the image data into the OpenGL texture
+            GL.TexImage2D(TextureTarget.Texture2D,
+                          0,
+                          PixelInternalFormat.Rgba,
+                          bmp_data.Width,
+                          bmp_data.Height,
+                          0,
+                          OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
+                          OpenTK.Graphics.OpenGL.PixelType.UnsignedByte,
+                          bmp_data.Scan0);
+
+            // Unlock the image data
+            bmp.UnlockBits(bmp_data);
+
+            // Configure minification and magnification filters
+            GL.TexParameter(TextureTarget.Texture2D,
+                    TextureParameterName.TextureMinFilter,
+                    (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D,
+                    TextureParameterName.TextureMagFilter,
+                    (int)TextureMagFilter.Linear);
+
+            // Return the OpenGL object ID for use
+            return id;
+        }
+    }
+    
+}
+*****************************************SCHEME*********************************
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using OpenTK;
+using OpenTK.Input;
+using OpenTK.Graphics.OpenGL;
+using System.Runtime.InteropServices;
+using ShadowEngine;
+using System.Drawing;
+namespace NextGen
+{
+    class Scheme
+    {
+        Color[] Palate = new Color[6];
+
+        public Scheme(Color alpha, Color beta, Color gamma, Color delta, Color epsilon, Color zeta)
+        {
+            Palate[0] = alpha;
+            Palate[1] = beta;
+            Palate[2] = gamma;
+            Palate[3] = delta;
+            Palate[4] = epsilon;
+            Palate[5] = zeta;
+        }
+        public Scheme(Color alpha)
+        {
+            Palate[0] = alpha;
+            Palate[1] = alpha;
+            Palate[2] = alpha;
+            Palate[3] = alpha;
+            Palate[4] = alpha;
+            Palate[5] = alpha;
+        }
+        public Color getTop()
+        {
+            return Palate[0];
+        }
+
+        public Color getBottom()
+        {
+            return Palate[1];
+        }
+
+        public Color getFront()
+        {
+            return Palate[2];
+        }
+
+        public Color getBack()
+        {
+            return Palate[3];
+        }
+
+        public Color getLeft()
+        {
+            return Palate[4];
+        }
+
+        public Color getRight()
+        {
+            return Palate[5];
+        }
+    }
+}
+*****************************************SCENE**********************************
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using OpenTK;
+
+namespace NextGen
+{
+    class Scene
+    {
+        public static Room Tree()
+        {//CREATE A TREE
+            Room Obj = new Room(6, 6, 6);
+            Obj.setEmpty();
+            Vector3 alpha = new Vector3(0, 0, 0);
+            Obj.setObject(alpha.setXYZ(3, 3, 0), 'T');
+            Obj.setObject(alpha.setXYZ(3, 3, 1), 'T');
+            Obj.setObject(alpha.setXYZ(3, 3, 2), 'T'); Obj.setObject(alpha.setXYZ(2, 3, 2), 'L'); Obj.setObject(alpha.setXYZ(4, 3, 2), 'L'); Obj.setObject(alpha.setXYZ(3, 4, 2), 'L'); Obj.setObject(alpha.setXYZ(3, 2, 2), 'L');
+            Obj.setObject(alpha.setXYZ(3, 3, 3), 'T'); Obj.setObject(alpha.setXYZ(2, 3, 3), 'L'); Obj.setObject(alpha.setXYZ(4, 3, 3), 'L'); Obj.setObject(alpha.setXYZ(3, 4, 3), 'L'); Obj.setObject(alpha.setXYZ(3, 2, 3), 'L'); 
+            Obj.setObject(alpha.setXYZ(2, 4, 3), 'L'); Obj.setObject(alpha.setXYZ(4, 2, 3), 'L'); Obj.setObject(alpha.setXYZ(4, 4, 3), 'L'); Obj.setObject(alpha.setXYZ(2, 2, 3), 'L'); 
+            Obj.setObject(alpha.setXYZ(3, 5, 3), 'L'); Obj.setObject(alpha.setXYZ(5, 3, 3), 'L'); Obj.setObject(alpha.setXYZ(1, 3, 3), 'L'); Obj.setObject(alpha.setXYZ(3, 1, 3), 'L');
+            Obj.setObject(alpha.setXYZ(3, 3, 4), 'T'); Obj.setObject(alpha.setXYZ(2, 3, 4), 'L'); Obj.setObject(alpha.setXYZ(4, 3, 4), 'L'); Obj.setObject(alpha.setXYZ(3, 4, 4), 'L'); Obj.setObject(alpha.setXYZ(3, 2, 4), 'L');
+            Obj.setObject(alpha.setXYZ(3, 3, 5), 'L');
+
+            return Obj;
+        }
+        public static Room Bush()
+        {//CREATE A BUSH
+            Room Obj = new Room(1, 1, 1);
+            Obj.setEmpty();
+            Vector3 alpha = new Vector3(0, 0, 0);
+            Obj.setObject(alpha, 'L');
+            return Obj;
+        }
+    }
+}
+***********************************ROOM**************************************
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using OpenTK;
+
+namespace NextGen
+{
+    class Room
+    {
+        static double roughness = .5; //Terrain Rougness
+        static double[,] height; //Corner Heights
+        static Random Rand = new Random(); //Random Number Generator
+        private char[, ,] Cube; //3D array of characters for Room
+        Vector3 alpha = new Vector3(0, 0, 0); //Class Vector
+
+
+        public Room(int x, int y, int z)
+        {//CREATE NEW ROOM
+            if (x > 0 && y > 0 && z > 0)
+            {
+                Cube = new char[x, y, z];
+                height = new double[x, z];
+            }
+            else
+            {
+                System.Console.WriteLine("Room: Nonexistent Room: " + x + ", " + y + ", " + z);
+                Cube = new char[0, 0, 0];
+
+            }
+        }
+        public Room(Vector3 vec)
+        {//CREATE NEW ROOM
+            if (vec.X > 0 && vec.Y > 0 && vec.Z > 0)
+            {
+                Cube = new char[(int)vec.X, (int)vec.Y, (int)vec.Z];
+                height = new double[(int)vec.X, (int)vec.Z];
+            }
+            else
+            {
+                System.Console.WriteLine("Room: Nonexistent Room: " + vec.X + ", " + vec.Y + ", " + vec.Z);
+                Cube = new char[0, 0, 0];
+
+            }
+        }
+
+        public Room(char[, ,] inpt)
+        {//CREATE NEW ROOM
+            Cube = inpt;
+        }
+
+        public int getXDim()
+        {//GET X DIMENSION OF ROOM
+            return Cube.GetLength(0);
+        }
+
+        public int getYDim()
+        {//GET Y DIMENSION OF ROOM
+            return Cube.GetLength(1);
+        }
+
+        public int getZDim()
+        {//GET Z DIMENSION OF ROOM
+            return Cube.GetLength(2);
+        }
+
+        public char[, ,] getRoom()
+        {//RETURN ENTIRE ROOM
+            return Cube;
+        }
+
+        public Vector3 getRoomSize()
+        {//RETURN ALL DIMENSIONS
+            return new Vector3(getXDim() - 2, getYDim() - 2, getZDim() - 2);
+        }
+
+        public void addScene(Room obj, Vector3 target)
+        {//ADD A SCENE ITEM TO THE MAP
+            for (int y = 0; y < obj.getYDim(); y++)
+            {
+                for (int x = 0; x < obj.getXDim(); x++)
+                {
+                    for (int z = 0; z < obj.getZDim(); z++)
+                    {
+                        alpha = alpha.setXYZ(x, y, z);
+                        if (getObjectAt(target.offSet(alpha)).Equals('#'))
+                        {
+                            setObject(alpha.offSet(target), obj.getObjectAt(alpha));
+                        }
+                    }
+                }
+            }
+        }
+        public char getObjectAt(Vector3 coor)
+        {//GET THE OBJECT AT A CERTAIN POSITION
+            if (Contains(coor))
+            {
+                return Cube[(int)coor.X, (int)coor.Y, (int)coor.Z];
+            }
+            else
+            {
+                System.Console.WriteLine("getObjectAt:  " + coor.toString() + " does not exist.");
+                return '#';
+            }
+        }
+
+        public Room getObjectsInRadius(Vector3 coor, int Rad)
+        {//GET THE OBJECTS WITHIN A CERTAIN RADIUS
+            if (Contains(coor))
+            {
+                Rad--;
+                Vector3 target = new Vector3(0, 0, 0);
+                Vector3 obtar = new Vector3(0, 0, 0);
+                Room area = new Room(2 * Rad - 1, 2 * Rad - 1, 2 * Rad - 1);
+                for (int ydim = -Rad; ydim <= Rad; ydim++)
+                {
+                    for (int xdim = -Rad; xdim <= Rad; xdim++)
+                    {
+                        for (int zdim = -Rad; zdim <= Rad; zdim++)
+                        {
+                            if (Math.Abs(xdim) + Math.Abs(zdim) + Math.Abs(ydim) <= Rad)
+                            {
+                                target = target.setXYZ(xdim + Rad, ydim + Rad, zdim + Rad);
+                                obtar = obtar.setXYZ((int)coor.X + xdim, (int)coor.Y + ydim, (int)coor.Z + zdim);
+                                if (Contains(target) && Contains(obtar))
+                                {
+                                    area.setObject(target, getObjectAt(obtar));
+                                }
+                            }
+                        }
+                    }
+                }
+                return area;
+            }
+            else
+            {
+                System.Console.WriteLine("getObjectsInRadius: " + coor.toString() + "does not exist");
+            }
+            return null;
+        }
+
+        public List<Entity> toDisplay()
+        {//TRANSLATE 3D MATRIX OF CHAR TO LIST OF ENTITY
+            List<Entity> temp = new List<Entity>();
+            char car;
+            for (int y = 0; y < getYDim(); y++)
+            {
+                for (int x = 0; x < getXDim(); x++)
+                {
+                    for (int z = 0; z < getZDim(); z++)
+                    {
+                        alpha = alpha.setXYZ(x, y, z);
+                        car = getObjectAt(alpha);
+                        if (!car.Equals('#'))
+                        {
+                            alpha = alpha.switchZY().offSetX(1, 1, -1);
+                            if (car.Equals(']'))
+                            {
+                                temp.Add(new Entity(alpha, "Solid", ']', 1, 0, Main.rotAxis, Main.Colors[0], Main.Textures[1], Main.TransP[10]));
+                            }
+                            else if (car.Equals('['))
+                            {
+                                temp.Add(new Entity(alpha, "Solid", '[', 1, 0, Main.rotAxis, Main.Colors[0], Main.Textures[2], Main.TransP[10]));
+                            }
+                            else if (car.Equals('S'))
+                            {
+                                temp.Add(new Entity(alpha, "Solid", 'S', 1, 0, Main.rotAxis, Main.Colors[0], Main.Textures[3], Main.TransP[10]));
+                            }
+                            else if (car.Equals('D'))
+                            {
+                                temp.Add(new Entity(alpha, "Solid", 'D', 1, 0, Main.rotAxis, Main.Colors[0], Main.Textures[4], Main.TransP[10]));
+                            }
+                            else if (car.Equals(':'))
+                            {
+                                temp.Add(new Entity(alpha, "Solid", ':', 1, 0, Main.rotAxis, Main.Colors[0], Main.Textures[5], Main.TransP[10]));
+                            }
+                            else if (car.Equals('~'))
+                            {
+                                temp.Add(new Entity(alpha, "Liquid", '~', 1, 0, Main.rotAxis, Main.Colors[0], Main.Textures[6], Main.TransP[5]));
+                            }
+                            else if (car.Equals('C'))
+                            {
+                                temp.Add(new Entity(alpha, "Solid", 'C', 1, 0, Main.rotAxis, Main.Colors[0], Main.Textures[7], Main.TransP[2]));
+                            }
+                            else if (car.Equals('A'))
+                            {
+                                temp.Add(new Entity(alpha, "Slime", 'A', 1, 0, Main.rotAxis, Main.Colors[0], Main.Textures[8], Main.TransP[9]));
+                            }
+                            else if (car.Equals('T'))
+                            {
+                                temp.Add(new Entity(alpha, "Solid", 'T', 1, 0, Main.rotAxis, Main.Colors[0], Main.Textures[9], Main.TransP[10]));
+                            }
+                            else if (car.Equals('L'))
+                            {
+                                temp.Add(new Entity(alpha, "Semi", 'L', 1, 0, Main.rotAxis, Main.Colors[0], Main.Textures[10], Main.TransP[8]));
+                            }
+                            else if (car.Equals('!'))
+                            {
+                                temp.Add(new Entity(alpha, "Solid", '!', 1, 0, Main.rotAxis, Main.Colors[0], Main.Textures[11], Main.TransP[10]));
+                            }
+                        }
+                    }
+                }
+            }
+            return temp;
+        }
+
+        public List<Vector3> findObjects(char ent)
+        {//RETURN POSITIONS OF ALL SPECIFIED ITEM TYPE
+            List<Vector3> datapoints = new List<Vector3>();
+            Vector3 obtar = new Vector3(0, 0, 0);
+            for (int y = 0; y < getYDim(); y++)
+            {
+                for (int x = 0; x < getXDim(); x++)
+                {
+                    for (int z = 0; z < getZDim(); z++)
+                    {
+                        obtar = obtar.setXYZ(x, y, z);
+                        if (getObjectAt(obtar) == ent)
+                        {
+                            datapoints.Add(obtar);
+                        }
+                    }
+                }
+            }
+            return datapoints;
+        }
+
+
+
+        public Room roundAbout(Room place)
+        {//CLONE A ROOM
+            Vector3 obtar = new Vector3(0, 0, 0);
+            for (int y = 0; y < getYDim(); y++)
+            {
+                for (int x = 0; x < getXDim(); x++)
+                {
+                    for (int z = 0; z < getZDim(); z++)
+                    {
+                        obtar = obtar.setXYZ(x, y, z);
+                        if (!getObjectAt(obtar).Equals('#'))
+                        {
+                            setObject(obtar, place.getObjectAt(obtar));
+                        }
+                    }
+                }
+
+            }
+            return this;
+        }
+
+        public Room Vision(Vector3 Home)
+        {
+            if (Contains(Home))
+            {
+                Room area = new Room(getXDim() - 2, getYDim() - 2, getZDim() - 2);
+                area.setEmpty();
+                Vector3 target = new Vector3(0, 0, 0);
+                List<Vector3> walls = findObjects(']');
+                List<Vector3> distance = new List<Vector3>();
+                for (int i = 0; i < walls.Count; i++)
+                {
+                    distance.Add(new Vector3(distance[i].X - Home.X, distance[i].Y - Home.Y, distance[i].Z - Home.Z));
+                }
+                for (int i = 0; i < distance.Count; i++)
+                {
+                    int xVal = (int)distance[i].X;
+                    int yVal = (int)distance[i].Y;
+                    int zVal = (int)distance[i].Z;
+
+                    int wallX = (int)walls[i].X;
+                    int wallY = (int)walls[i].Y;
+                    int wallZ = (int)walls[i].Z;
+
+                    int xmov;
+                    if (xVal != 0)
+                    {
+                        xmov = (xVal / Math.Abs(xVal));
+                    }
+                    else
+                    {
+                        xmov = 0;
+                    }
+                    int ymov;
+                    if (yVal != 0)
+                    {
+                        ymov = (yVal / Math.Abs(yVal));
+                    }
+                    else
+                    {
+                        ymov = 0;
+                    }
+                    int zmov;
+                    if (zVal != 0)
+                    {
+                        zmov = (zVal / Math.Abs(zVal));
+                    }
+                    else
+                    {
+                        zmov = 0;
+                    }
+
+                    int xLoc = wallX, yLoc = wallY, zLoc = wallZ;
+                    target = target.setXYZ(wallX + xmov, wallY + ymov, wallZ + zmov);
+                    while (area.Contains(target))
+                    {
+                        xVal = (int)distance[i].X;
+                        yVal = (int)distance[i].Y;
+                        zVal = (int)distance[i].Z;
+                        while (xVal != 0 || yVal != 0 || zVal != 0)
+                        {
+                            if (xVal != 0)
+                            {
+                                xLoc += xmov;
+                                xVal -= xmov;
+                            }
+                            if (yVal != 0)
+                            {
+                                yLoc += ymov;
+                                yVal -= ymov;
+                            }
+                            if (zVal != 0)
+                            {
+                                zLoc += zmov;
+                                zVal -= zmov;
+                            }
+
+                            target = target.setXYZ(xLoc, yLoc, zLoc);
+                            if (area.Contains(target))
+                            {
+                                area.setObject(target, '#');
+                            }
+                        }
+                    }
+                }
+                return area.roundAbout(this);
+            }
+            else
+            {
+                System.Console.WriteLine("Vision: " + Home.toString() + "does not exist");
+                return null;
+            }
+        }
+
+
+
+        public Room getObjectsAt(Vector3 coor1, Vector3 coor2)
+        {
+            Vector3 target = new Vector3(0, 0, 0);
+            Vector3 obtar = new Vector3(0, 0, 0);
+            try
+            {
+                if (Contains(coor1) && Contains(coor2))
+                {
+                    Vector3 distance = coor1.distanceTo(coor2);
+                    Room area = new Room(distance.offSet(-1, -1, -1));
+                    for (int x = (int)coor1.X; x <= coor2.X; x++)
+                    {
+                        for (int y = (int)coor1.Y; y <= coor2.Y; y++)
+                        {
+                            for (int z = (int)coor1.Z; z <= coor2.Z; z++)
+                            {
+                                area.ToString();
+                                area.setObject(target.setXYZ(x - (int)coor1.X, y - (int)coor1.Y, z - (int)coor1.Z), getObjectAt(obtar.setXYZ(x, y, z)));
+                            }
+                        }
+                    }
+                    return area;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                System.Console.WriteLine("getObjectsAt: Negative array size " + coor1.toString() + " " + coor2.toString());
+            }
+            return null;
+        }
+
+        public void setEmpty()
+        {
+            Vector3 target = new Vector3(0, 0, 0);
+            for (int x = 0; x < getXDim(); x++)
+            {
+                for (int y = 0; y < getYDim(); y++)
+                {
+                    for (int z = 0; z < getZDim(); z++)
+                    {
+
+                        setObject(target.setXYZ(x, y, z), '#');
+                    }
+                }
+            }
+        }
+        public void addWater(int height)
+        {
+            for (int r = 0; r < getXDim(); r++)
+            {
+                for (int c = 0; c < getYDim(); c++)
+                {
+                    for (int h = 0; h < height; h++)
+                    {
+                        alpha = alpha.setXYZ(r, c, h);
+                        setObject(alpha, '~');
+                    }
+                }
+            }
+        }
+
+        public void addLava(int height)
+        {
+            for (int r = 0; r < getXDim(); r++)
+            {
+                for (int c = 0; c < getYDim(); c++)
+                {
+                    for (int h = 0; h < height; h++)
+                    {
+                        alpha = alpha.setXYZ(r, c, h);
+                        if (getObjectAt(alpha).Equals('#'))
+                        {
+                            setObject(alpha, '!');
+                        }
+                    }
+                }
+            }
+        }
+
+
+        public void setObject(Vector3 coor, char ent)
+        {
+            /*
+             Adds an Object to the Map.  
+             List How far left, high and deep from origin.
+             Followed by the Object to be added
+             (x,y,z,object)
+             */
+            if (Contains(coor))
+            {
+                Cube[(int)coor.X, (int)coor.Y, (int)coor.Z] = ent;
+            }
+            else
+            {
+                System.Console.WriteLine("setObject: " + coor.toString() + " does not exist");
+            }
+
+        }
+
+        public void addArea(Vector3 coor1, Vector3 coor2, char ent)
+        {
+            if (Contains(coor1) && Contains(coor2))
+            {
+                Vector3 distance = coor1.distanceTo(coor2);
+                if (distance.X >= 0 && distance.Y >= 0 && distance.Z >= 0)
+                {
+                    Vector3 target = new Vector3(0, 0, 0);
+                    for (int x = (int)coor1.X; x <= coor2.X; x++)
+                    {
+                        for (int y = (int)coor1.Y; y <= coor2.Y; y++)
+                        {
+                            for (int z = (int)coor1.Z; z <= coor2.Z; z++)
+                            {
+                                setObject(target.setXYZ(x, y, z), ent);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    System.Console.WriteLine("addAtea: NonPositive distance: " + distance.toString());
+                }
+            }
+            else
+            {
+                System.Console.WriteLine("addArea: Either " + coor1.toString() + " or " + coor2.toString() + "does not exist");
+            }
+        }
+
+        public void removeObject(Vector3 coor)
+        {
+
+            /*
+             Adds an Object to the Map.  
+             List How far left, high and deep from origin.
+             Followed by the Object to be added
+             (x,y,z,object)
+             */
+            if (Contains(coor))
+            {
+                Cube[(int)coor.X, (int)coor.Y, (int)coor.Z].Equals('#');
+            }
+            else
+            {
+                System.Console.WriteLine("removeObject: " + coor.toString() + "does not exist");
+            }
+
+        }
+
+        public void removeArea(Vector3 coor1, Vector3 coor2)
+        {
+            if (Contains(coor1) && Contains(coor2))
+            {
+                Vector3 distance = coor1.distanceTo(coor2);
+                if (distance.X >= 0 && distance.Y >= 0 && distance.Z >= 0)
+                {
+                    Vector3 obtar = new Vector3(0, 0, 0);
+                    for (int x = (int)coor1.X; x <= coor2.X; x++)
+                    {
+                        for (int y = (int)coor1.Y; y <= coor2.Y; y++)
+                        {
+                            for (int z = (int)coor1.Z; z <= coor2.Z; z++)
+                            {
+                                removeObject(obtar.setXYZ(x, y, z));
+                            }
+                        }
+                    }
+                }
+                System.Console.WriteLine("removeArea: NonPositive distance: " + distance.toString());
+
+            }
+            else
+            {
+                System.Console.WriteLine("removeArea: Either " + coor1.toString() + " or " + coor2.toString() + "does not exist");
+            }
+        }
+
+
+        public void TerrainGen(int size, int[] seed)
+        {
+            size = (int)Math.Pow(2, size);
+            height[0, 0] = seed[0];
+            height[0, height.GetLength(1) - 1] = seed[1];
+            height[height.GetLength(0) - 1, 0] = seed[2];
+            height[height.GetLength(0) - 1, height.GetLength(1) - 1] = seed[3];
+            divide(0, 0, size, size);
+            addLand();
+
+        }
+        private void addLand()
+        {
+            for (int r = 0; r < height.GetLength(0); r++)
+            {
+                for (int c = 0; c < height.GetLength(1); c++)
+                {
+                    for (int h = 0; h <= height[r, c]; h++)
+                    {
+                        alpha = alpha.setXYZ(r, c, h);
+                        setObject(alpha, ']');
+
+                    }
+                }
+            }
+        }
+        public void loadBlanks()
+        {
+            for (int r = 0; r < height.GetLength(0); r++)
+            {
+                for (int c = 0; c < height.GetLength(1); c++)
+                {
+                    height[r, c] = 0;
+                }
+            }
+            System.Console.WriteLine(height);
+        }
+        public void divide(int xbeg, int zbeg, int xfin, int zfin)
+        {
+            int halfx = xbeg + (xfin - xbeg) / 2;
+            int halfz = zbeg + (zfin - zbeg) / 2;
+            double scale = 0;// roughness * (xfin - xbeg) / 10;
+            height[xbeg, halfz] = (height[xbeg, zbeg] + height[xbeg, zfin]) / 2;
+            height[xfin, halfz] = (height[zfin, zbeg] + height[xfin, zfin]) / 2;
+            height[halfx, zbeg] = (height[xbeg, zbeg] + height[xfin, zbeg]) / 2;
+            height[halfx, zfin] = (height[xbeg, zfin] + height[xfin, zfin]) / 2;
+            height[halfx, halfz] = ((height[xbeg, zbeg] + height[xfin, zbeg] + height[xbeg, zfin] + height[xfin, zfin]) / 4) + (Rand.NextDouble() * scale);
+            //for (int z = 0; z < height.GetLength(0); z += half)
+            //{
+            //    for (int x = (z + half) % size+1; x < height.GetLength(1); x += size)
+            //    {
+            //        diamond(x, y, half, Rand.Next(0,10) * scale * 2 - scale);
+            //    }
+            //}
+
+            if (xfin - xbeg <= 3)
+            {
+                return;
+            }
+            else
+            {
+                divide(xbeg, zbeg, halfx, halfz);
+                divide(halfx, halfz, xfin, zfin);
+                divide(xbeg, halfz, halfx, zfin);
+                divide(halfx, zbeg, xfin, halfz);
+            }
+            //divide(xbeg,zbeg,xbeg+halfx,halfz);
+            //divide(xbeg, zbeg+halfz, xbeg+halfx, zfin);
+            //divide(halfx, halfz, xfin, zfin);
+            //divide(halfx, zbeg, xfin, halfz);
+        }
+
+
+        public void printHeight(double[,] inpt)
+        {
+            for (int r = 0; r < inpt.GetLength(0); r++)
+            {
+                for (int c = 0; c < inpt.GetLength(1); c++)
+                {
+                    System.Console.Write(inpt[r, c] + ",");
+                }
+                System.Console.WriteLine("");
+            }
+
+        }
+        public void hollow()
+        {
+
+            Room comp = new Room(getXDim() + 2, getYDim() + 2, getZDim() + 2);
+            comp.setEmpty();
+            for (int x = 0; x < getXDim(); x++)
+            {
+                for (int y = 0; y < getYDim(); y++)
+                {
+                    for (int z = 0; z < getZDim(); z++)
+                    {
+                        alpha = alpha.setXYZ(x, y, z);
+                        comp.setObject(alpha.offSet(1, 1, 1), getObjectAt(alpha));
+                    }
+                }
+            }
+            for (int x = 0; x < comp.getXDim(); x++)
+            {
+                for (int y = 0; y < comp.getYDim(); y++)
+                {
+                    for (int z = 0; z < comp.getZDim(); z++)
+                    {
+                        alpha = alpha.setXYZ(x, y, z);
+                        if (comp.getObjectAt(alpha).Equals('#'))
+                        {
+                            comp.setObject(alpha, '`');
+                        }
+                    }
+                }
+            }
+
+
+            for (int x = 1; x < getXDim() - 1; x++)
+            {
+                for (int y = 1; y < getYDim() - 1; y++)
+                {
+                    for (int z = 1; z < getZDim() - 1; z++)
+                    {
+                        alpha = alpha.setXYZ(x, y, z);
+                        if (((comp.getObjectAt(alpha.offSet(1, 0, 0)).Equals(']') || comp.getObjectAt(alpha.offSet(1, 0, 0)).Equals('[') || comp.getObjectAt(alpha.offSet(1, 0, 0)).Equals('D') || comp.getObjectAt(alpha.offSet(1, 0, 0)).Equals(':') || comp.getObjectAt(alpha.offSet(1, 0, 0)).Equals('S')) &&
+                            (comp.getObjectAt(alpha.offSet(-1, 0, 0)).Equals(']') || comp.getObjectAt(alpha.offSet(-1, 0, 0)).Equals('[') || comp.getObjectAt(alpha.offSet(-1, 0, 0)).Equals('D') || comp.getObjectAt(alpha.offSet(-1, 0, 0)).Equals(':') || comp.getObjectAt(alpha.offSet(-1, 0, 0)).Equals('S')) &&
+                            (comp.getObjectAt(alpha.offSet(0, 1, 0)).Equals(']') || comp.getObjectAt(alpha.offSet(0, 1, 0)).Equals('[') || comp.getObjectAt(alpha.offSet(0, 1, 0)).Equals('D') || comp.getObjectAt(alpha.offSet(0, 1, 0)).Equals(':') || comp.getObjectAt(alpha.offSet(0, 1, 0)).Equals('S')) &&
+                            (comp.getObjectAt(alpha.offSet(0, -1, 0)).Equals(']') || comp.getObjectAt(alpha.offSet(0, -1, 0)).Equals('[') || comp.getObjectAt(alpha.offSet(0, -1, 0)).Equals('D') || comp.getObjectAt(alpha.offSet(0, -1, 0)).Equals(':') || comp.getObjectAt(alpha.offSet(0, -1, 0)).Equals('S')) &&
+                            (comp.getObjectAt(alpha.offSet(0, 0, 1)).Equals(']') || comp.getObjectAt(alpha.offSet(0, 0, 1)).Equals('[') || comp.getObjectAt(alpha.offSet(0, 0, 1)).Equals('D') || comp.getObjectAt(alpha.offSet(0, 0, 1)).Equals(':') || comp.getObjectAt(alpha.offSet(0, 0, 1)).Equals('S')) &&
+                            (comp.getObjectAt(alpha.offSet(0, 0, -1)).Equals(']') || comp.getObjectAt(alpha.offSet(0, 0, -1)).Equals('[') || comp.getObjectAt(alpha.offSet(0, 0, -1)).Equals('D') || comp.getObjectAt(alpha.offSet(0, 0, -1)).Equals(':') || comp.getObjectAt(alpha.offSet(0, 0, -1)).Equals('S')))
+                            ||
+                            ((comp.getObjectAt(alpha.offSet(1, 0, 0)).Equals('~')) &&
+                            (comp.getObjectAt(alpha.offSet(-1, 0, 0)).Equals('~')) &&
+                            (comp.getObjectAt(alpha.offSet(0, 1, 0)).Equals('~')) &&
+                            (comp.getObjectAt(alpha.offSet(0, -1, 0)).Equals('~')) &&
+                            (comp.getObjectAt(alpha.offSet(0, 0, 1)).Equals('~')) &&
+                            (comp.getObjectAt(alpha.offSet(0, 0, -1)).Equals('~')))
+                            ||
+                            ((comp.getObjectAt(alpha.offSet(1, 0, 0)).Equals('C')) &&
+                            (comp.getObjectAt(alpha.offSet(-1, 0, 0)).Equals('C')) &&
+                            (comp.getObjectAt(alpha.offSet(0, 1, 0)).Equals('C')) &&
+                            (comp.getObjectAt(alpha.offSet(0, -1, 0)).Equals('C')) &&
+                            (comp.getObjectAt(alpha.offSet(0, 0, 1)).Equals('C')) &&
+                            (comp.getObjectAt(alpha.offSet(0, 0, -1)).Equals('C')))
+                            ||
+                            ((comp.getObjectAt(alpha.offSet(1, 0, 0)).Equals('!')) &&
+                            (comp.getObjectAt(alpha.offSet(-1, 0, 0)).Equals('!')) &&
+                            (comp.getObjectAt(alpha.offSet(0, 1, 0)).Equals('!')) &&
+                            (comp.getObjectAt(alpha.offSet(0, -1, 0)).Equals('!')) &&
+                            (comp.getObjectAt(alpha.offSet(0, 0, 1)).Equals('!')) &&
+                            (comp.getObjectAt(alpha.offSet(0, 0, -1)).Equals('!'))))
+                        {
+                            setObject(alpha.offSet(-1, -1, -1), '#');
+
+                        }
+                    }
+                }
+            }
+
+        }
+        public bool Contains(Vector3 coor)
+        {
+            return (coor.X >= 0 && coor.Y >= 0 && coor.Z >= 0 && coor.X < getXDim() && coor.Y < getYDim() && coor.Z < getZDim());
+        }
+        public void cave(int depth, Vector3 coor, double chance, char ent)
+        {
+
+            alpha = alpha.setXYZ((int)coor.X, (int)coor.Y, (int)coor.Z);
+            if (Contains(alpha)) { setObject(alpha, ent); }
+            if (Contains(alpha.offSet(1, 0, 0)) && getObjectAt(alpha.offSet(1, 0, 0)).Equals(']') && getObjectAt(alpha.offSet(1, 0, 0)).Equals('#')) { setObject(alpha.offSet(1, 0, 0), ent); }
+            if (Contains(alpha.offSet(-1, 0, 0)) && getObjectAt(alpha.offSet(-1, 0, 0)).Equals(']') && !getObjectAt(alpha.offSet(-1, 0, 0)).Equals('#')) { setObject(alpha.offSet(-1, 0, 0), ent); }
+            if (Contains(alpha.offSet(0, 1, 0)) && getObjectAt(alpha.offSet(0, 1, 0)).Equals(']') && !getObjectAt(alpha.offSet(0, 1, 0)).Equals('#')) { setObject(alpha.offSet(0, 1, 0), ent); }
+            if (Contains(alpha.offSet(0, -1, 0)) && getObjectAt(alpha.offSet(0, -1, 0)).Equals(']') && !getObjectAt(alpha.offSet(0, -1, 0)).Equals('#')) { setObject(alpha.offSet(0, -1, 0), ent); }
+            if (Contains(alpha.offSet(0, 0, 1)) && getObjectAt(alpha.offSet(0, 0, 1)).Equals(']') && !getObjectAt(alpha.offSet(0, 0, 1)).Equals('#')) { setObject(alpha.offSet(0, 0, 1), ent); }
+            if (Contains(alpha.offSet(0, 0, -1)) && getObjectAt(alpha.offSet(0, 0, -1)).Equals(']') && !getObjectAt(alpha.offSet(0, 0, -1)).Equals('#')) { setObject(alpha.offSet(0, 0, -1), ent); }
+            double prob = Math.Pow(chance, 2);
+            alpha = alpha.setXYZ((int)coor.X + 1, (int)coor.Y, (int)coor.Z);
+            if
+            (Contains(alpha) /*&& inpt[coor.X + 1, coor.Y, coor.Z].Equals(']'*/ && Rand.NextDouble() < prob)
+            {
+                cave(depth + 1, alpha, prob, ent);
+            }
+            alpha = alpha.setXYZ((int)coor.X - 1, (int)coor.Y, (int)coor.Z);
+            if
+            (Contains(alpha) /*&& inpt[(int)coor.X - 1, (int)coor.Y, (int)coor.Z].Equals(']')*/&& Rand.NextDouble() < prob)
+            {
+                cave(depth + 1, alpha, prob, ent);
+            }
+            alpha = alpha.setXYZ((int)coor.X, (int)coor.Y + 1, (int)coor.Z);
+            if
+            (Contains(alpha) /*&& inpt[(int)coor.X , (int)coor.Y+1, (int)coor.Z].Equals(']'*/ && Rand.NextDouble() < prob)
+            {
+                cave(depth + 1, alpha, prob, ent);
+            }
+            alpha = alpha.setXYZ((int)coor.X, (int)coor.Y - 1, (int)coor.Z);
+            if
+            (Contains(alpha) /*&& inpt[(int)coor.X , (int)coor.Y-1, (int)coor.Z].Equals(']'*/ && Rand.NextDouble() < prob)
+            {
+                cave(depth + 1, alpha, prob, ent);
+            }
+            alpha = alpha.setXYZ((int)coor.X, (int)coor.Y, (int)coor.Z + 1);
+            if
+            (Contains(alpha) /*&& inpt[(int)coor.X + 1, (int)coor.Y, (int)coor.Z+1].Equals(']'*/ && Rand.NextDouble() < prob)
+            {
+                cave(depth + 1, alpha, prob, ent);
+            }
+            alpha = alpha.setXYZ((int)coor.X, (int)coor.Y, (int)coor.Z - 1);
+            if
+            (Contains(alpha) /*&& inpt[(int)coor.X , (int)coor.Y, (int)coor.Z-1].Equals(']'*/ && Rand.NextDouble() < prob)
+            {
+                cave(depth + 1, alpha, prob, ent);
+            }
+        }
+
+
+        public void modTerrain()
+        {
+            Room comp = new Room(getXDim() + 2, getYDim() + 2, getZDim() + 2);
+            comp.setEmpty();
+            for (int x = 0; x < getXDim(); x++)
+            {
+                for (int y = 0; y < getYDim(); y++)
+                {
+                    for (int z = 0; z < getZDim(); z++)
+                    {
+                        alpha = alpha.setXYZ(x, y, z);
+                        comp.setObject(alpha.offSet(1, 1, 1), getObjectAt(alpha));
+                        setObject(alpha, getObjectAt(alpha));
+                    }
+                }
+            }
+            for (int x = 0; x < comp.getXDim(); x++)
+            {
+                for (int y = 0; y < comp.getYDim(); y++)
+                {
+                    for (int z = 0; z < comp.getZDim(); z++)
+                    {
+                        alpha = alpha.setXYZ(x, y, z);
+                        if (comp.getObjectAt(alpha).Equals('#'))
+                        {
+                            comp.setObject(alpha, '`');
+                        }
+                    }
+                }
+            }
+
+            for (int x = 1; x < comp.getXDim() - 1; x++)
+            {
+                for (int y = 1; y < comp.getYDim() - 1; y++)
+                {
+                    for (int z = 1; z < comp.getZDim() - 1; z++)
+                    {
+
+                        alpha = alpha.setXYZ(x, y, z);
+                        if (z > 0 && z + 3 < comp.getZDim() - 1)
+                        {
+                            if (Rand.NextDouble() > .5)
+                            {
+                                if
+                               (comp.getObjectAt(alpha.offSet(0, 0, 2)).Equals(']') && comp.getObjectAt(alpha.offSet(0, 0, 1)).Equals(']'))
+                                {
+                                    setObject(alpha.offSet(-1, -1, -1), 'S');
+                                }
+                            }
+                            else if
+                              (comp.getObjectAt(alpha.offSet(0, 0, 3)).Equals(']') && comp.getObjectAt(alpha.offSet(0, 0, 2)).Equals(']') && comp.getObjectAt(alpha.offSet(0, 0, 1)).Equals(']'))
+                            {
+                                setObject(alpha.offSet(-1, -1, -1), 'S');
+                            }
+
+                        }
+                        if
+
+                         ((comp.getObjectAt(alpha).Equals(']')) &&
+                         (comp.getObjectAt(alpha.offSet(1, 0, 0)).Equals('~') ||
+                            comp.getObjectAt(alpha.offSet(-1, 0, 0)).Equals('~') ||
+                            comp.getObjectAt(alpha.offSet(0, 1, 0)).Equals('~') ||
+                            comp.getObjectAt(alpha.offSet(0, -1, 0)).Equals('~') ||
+                            comp.getObjectAt(alpha.offSet(0, 0, 1)).Equals('~')))
+                        {
+                            setObject(alpha.offSet(-1, -1, -1), ':');
+                        }
+                        if
+                           (comp.getObjectAt(alpha).Equals(']') &&
+                           comp.getObjectAt(alpha.offSet(0, 0, 1)).Equals('`'))
+                        {
+                            setObject(alpha.offSet(-1, -1, -1), '[');
+
+                            if (Rand.NextDouble() < Main.TreeProb / 1000)
+                            {
+                                addScene(Scene.Tree(), alpha.offSet(-4, -4, 0));
+                            }
+                            else if (Rand.NextDouble() < Main.BushProb / 1000)
+                            {
+                                addScene(Scene.Bush(), alpha.offSet(-1, -1, 0));
+                            }
+                        }
+                        if (alpha.Z > Main.corners[1] + 10 && alpha.Z < Main.corners[1] + 50 && Rand.NextDouble() < Main.CloudProb / 10000)
+                        {
+
+                            cave(1, alpha.setXYZ(x, y, z), Rand.NextDouble(.5, .999), 'C');
+                        }
+
+                        if (alpha.Z > Main.corners[1] - 50 && alpha.Z < Main.corners[1] - 10 && Rand.NextDouble() < Main.CaveProb / 10000)
+                        {
+                            cave(1, alpha.setXYZ(x, y, z), Rand.NextDouble(.5, .999), '#');
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+***************************************************PROGRAM**********************
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace NextGen
+{
+    static class Program
+    {
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form1());
+        }
+    }
+}
+*********************************************MAPMAKER***************************
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace NextGen
+{
+    static class Program
+    {
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form1());
+        }
+    }
+}
+****************************************MAIN************************************
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Drawing.Imaging;   // For BitmMapData type
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using ShadowEngine;
+using OpenTK;
+using OpenTK.Input;
+using OpenTK.Graphics.OpenGL;
+
+namespace NextGen
+{
+    class Main
+    {
+        public static Texture[] Textures = new Texture[12]; //Texture packs
+        public static Scheme[] Colors = new Scheme[8]; //Color scheme
+        public static Transparency[] TransP = new Transparency[11]; //Transparency
+        public static Room FEmpty = new Room(3, 3, 3); //Room
+        public static Camera cam = new Camera(45, 45, -45, -7, -.7f, -.5f, 45, 1.5f, 0.004f); //Camera set up
+        public static int[] rotAxis = new int[3];//Sets the axis of rotation
+        static OpenTK.Vector3 alpha = new OpenTK.Vector3(0, 0, 0); //Class vector
+        public static int ii = 0; //Current iteration
+        public static List<Entity> Map; //Output list
+        public static int[] corners = { 5, 5, 5, 5 }; //Corner heights
+        public static int RLevel = 5; // Room level
+        public static int WaterHeight = 5; //Water Height
+        public static int LavaHeight = 5; //Lava Height
+        public static double TreeProb = 2; //Tree Probability
+        public static double BushProb = 2; // Bush Probability
+        public static double CloudProb = 2; // Cloud Probability
+        public static double CaveProb = 2; // Cave Probability
+        static int siz; // Room size
+
+
+        public static void loadVar()
+        {//LOAD VARIABLES FOR PROGRAM
+            siz = CalcSiz();
+            FEmpty = new Room(siz, siz, siz); //Set Room to size Level^2+1
+
+            // Load textures
+            Textures[0] = new Texture("Wood");
+            Textures[1] = new Texture("Dirt");
+            Textures[2] = new Texture("Grass", "Dirt", "GDirt", "GDirt", "GDirt", "GDirt");
+            Textures[3] = new Texture("Stone");
+            Textures[4] = new Texture("DStone");
+            Textures[5] = new Texture("Sand");
+            Textures[6] = new Texture("Water");
+            Textures[7] = new Texture("Cloud");
+            Textures[8] = new Texture("SSide", "SSide", "Slime", "SSide", "SSide", "SSide");
+            Textures[9] = new Texture("TRings", "TRings", "Trunk", "Trunk", "Trunk", "Trunk");
+            Textures[10] = new Texture("Leaves");
+            Textures[11] = new Texture("Lava");
+            //Hey Micah, don't be stupid. If you add another texture, change that ^^^^^^^^^
+
+
+            //Set Colors
+            Colors[0] = new Scheme(Color.FromArgb(255, 255, 255, 255)); // White
+            Colors[1] = new Scheme(Color.FromArgb(255, 0, 255, 255)); // Teal
+            Colors[2] = new Scheme(Color.FromArgb(255, 255, 0, 255)); // Purple
+            Colors[3] = new Scheme(Color.FromArgb(255, 255, 255, 0)); // Yellow
+            Colors[4] = new Scheme(Color.FromArgb(255, 0, 0, 255)); // Blue
+            Colors[5] = new Scheme(Color.FromArgb(255, 255, 0, 0)); // Red
+            Colors[6] = new Scheme(Color.FromArgb(255, 0, 255, 0)); // Green
+            Colors[7] = new Scheme(Color.FromArgb(255, 0, 0, 0)); // Black
+
+            //Set Transparency
+            TransP[0] = new Transparency(0);
+            TransP[1] = new Transparency(.1f);
+            TransP[2] = new Transparency(.2f);
+            TransP[3] = new Transparency(.3f);
+            TransP[4] = new Transparency(.4f);
+            TransP[5] = new Transparency(.5f);
+            TransP[6] = new Transparency(.6f);
+            TransP[7] = new Transparency(.7f);
+            TransP[8] = new Transparency(.8f);
+            TransP[9] = new Transparency(.9f);
+            TransP[10] = new Transparency(1);
+
+            //Rotation Axis
+            rotAxis[0] = 0;
+            rotAxis[1] = 1;
+            rotAxis[2] = 0;
+
+
+            //Create Room
+            FEmpty.setEmpty();
+            FEmpty.addWater(WaterHeight);
+            FEmpty.TerrainGen(RLevel, corners);
+            FEmpty.modTerrain();
+            FEmpty.addLava(LavaHeight);
+            FEmpty.hollow();
+            Map = FEmpty.toDisplay();
+
+        }
+        public static int CalcSiz()
+        {//CALCULATE ROOM SIZE
+            return (int)Math.Pow(2, RLevel) + 1;
+        }
+
+        public static void DrawScene()
+        {//DRAW SCENE
+            Draw.BoxScene(ii, alpha.setXYZ(-siz, siz, -siz), Textures[0]);//Generate Frame
+
+            //AddItems
+            foreach (Entity ent in Map)
+            {
+                Draw.Cube(ii, ent);
+            }
+        }
+    }
+}
+*****************************************DRAW*******************************
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Drawing.Imaging;   // For BitmMapData type
+using System.Windows.Forms;
+using OpenTK;
+using OpenTK.Input;
+using OpenTK.Graphics.OpenGL;
+using System.Runtime.InteropServices;
+using ShadowEngine;
+
+namespace NextGen
+{
+    class Draw
+    {
+
+        public static bool loaded = false; //Checks if OpenGL Window is active
+
+        public static void Pyramid(int it, float x, float y, float z, float size, float rotAngle, int[] rotAxis, Texture tRef, Scheme Tint, Transparency transparancy)
+        {//Creates Pyramid Object
+            //Adjusts object position for centering
+            x += size / 2;
+            x *= -1;
+            y += size / 2;
+            z += size / 2;
+
+            rotAngle *= it;//sets rotation angle
+
+            GL.PushMatrix();
+            GL.Translate(x, y, z);//Moves object
+            
+            GL.Rotate(-rotAngle, rotAxis[0], rotAxis[1], rotAxis[2]);//Rotates object
+            //Bottom
+            GL.BindTexture(TextureTarget.Texture2D, tRef.getBottom()); //Get texture
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(Tint.getBottom().R, Tint.getBottom().G, Tint.getBottom().B, transparancy.getBottom()); //Set color and transparancy
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(-size / 2, -size / 2, size / 2);//Create Plane
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(-size / 2, -size / 2, -size / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(size / 2, -size / 2, -size / 2);
+            GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(size / 2, -size / 2, size / 2);
+            GL.End();
+
+            //Front
+            GL.BindTexture(TextureTarget.Texture2D, tRef.getFront());
+            GL.Begin(PrimitiveType.Triangles);
+            GL.Color4(Tint.getFront().R, Tint.getFront().G, Tint.getFront().B, transparancy.getFront());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(-size / 2, -size / 2, size / 2);
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(size / 2, -size / 2, size / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(0, size / 2, 0);
+            GL.End();
+
+            //Back
+            GL.BindTexture(TextureTarget.Texture2D, tRef.getBack());
+            GL.Begin(PrimitiveType.Triangles);
+            GL.Color4(Tint.getBack().R, Tint.getBack().G, Tint.getBack().B, transparancy.getBack());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(size / 2, -size / 2, -size / 2);     
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(-size / 2, -size / 2, -size / 2);         
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(0, size / 2, 0);                     
+            GL.End();
+
+            //Left
+            GL.BindTexture(TextureTarget.Texture2D, tRef.getLeft());
+            GL.Begin(PrimitiveType.Triangles);
+            GL.Color4(Tint.getLeft().R, Tint.getLeft().G, Tint.getLeft().B, transparancy.getLeft());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(-size / 2, -size / 2, -size / 2);
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(-size / 2, -size / 2, size / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(0, size / 2, 0);
+            GL.End();
+
+            //Right
+            GL.BindTexture(TextureTarget.Texture2D, tRef.getRight());
+            GL.Begin(PrimitiveType.Triangles);
+            GL.Color4(Tint.getRight().R, Tint.getRight().G, Tint.getRight().B, transparancy.getRight());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(size / 2, -size / 2, size / 2);
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(size / 2, -size / 2, -size / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(0, size / 2, 0);
+            GL.End();
+
+
+
+
+
+
+            GL.PopMatrix();
+        }
+
+         public static void Cube(int it, Entity ent){
+            //Adjusts object position for centering
+            double x = ent.Pos.X + ent.Size / -2;
+            double y = ent.Pos.X + ent.Size / 2;
+            double z = ent.Pos.X + ent.Size / 2;
+
+            double rotA = (ent.rotSpeed*it)%360;//sets rotation angle
+
+            GL.PushMatrix();
+            GL.Translate(ent.Pos);//Moves object
+            GL.Rotate(rotA, ent.rotAxis[0], ent.rotAxis[1], ent.rotAxis[2]);//Rotates object
+
+            //Top
+            GL.BindTexture(TextureTarget.Texture2D, ent.Tex.getTop()); //Get texture
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(ent.Tint.getTop().R, ent.Tint.getTop().G, ent.Tint.getTop().B, ent.Tran.getTop());//Set color and transparancy
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(-ent.Size / 2, ent.Size / 2, ent.Size / 2);//Create Plane
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(ent.Size / 2, ent.Size / 2, ent.Size / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(ent.Size / 2, ent.Size / 2, -ent.Size / 2);
+            GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(-ent.Size / 2, ent.Size / 2, -ent.Size / 2);
+            GL.End();
+
+            //Bottom
+            GL.BindTexture(TextureTarget.Texture2D, ent.Tex.getBottom());
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(ent.Tint.getBottom().R, ent.Tint.getBottom().G, ent.Tint.getBottom().B, ent.Tran.getBottom());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(-ent.Size / 2, -ent.Size / 2, ent.Size / 2);
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(-ent.Size / 2, -ent.Size / 2, -ent.Size / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(ent.Size / 2, -ent.Size / 2, -ent.Size / 2);
+            GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(ent.Size / 2, -ent.Size / 2, ent.Size / 2);
+            GL.End();
+
+            //Front
+            GL.BindTexture(TextureTarget.Texture2D, ent.Tex.getFront());
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(ent.Tint.getFront().R, ent.Tint.getFront().G, ent.Tint.getFront().B, ent.Tran.getFront());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(-ent.Size / 2, -ent.Size / 2, ent.Size / 2);
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(ent.Size / 2, -ent.Size / 2, ent.Size / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(ent.Size / 2, ent.Size / 2, ent.Size / 2);
+            GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(-ent.Size / 2, ent.Size / 2, ent.Size / 2);
+            GL.End();
+
+            //Back
+            GL.BindTexture(TextureTarget.Texture2D, ent.Tex.getBack());
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(ent.Tint.getBack().R, ent.Tint.getBack().G, ent.Tint.getBack().B, ent.Tran.getBack());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(ent.Size / 2, -ent.Size / 2, -ent.Size / 2);     
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(-ent.Size / 2, -ent.Size / 2, -ent.Size / 2);   
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(-ent.Size / 2, ent.Size / 2, -ent.Size / 2);     
+            GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(ent.Size / 2, ent.Size / 2, -ent.Size / 2);    
+            GL.End();
+
+            //Left
+            GL.BindTexture(TextureTarget.Texture2D, ent.Tex.getLeft());
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(ent.Tint.getLeft().R, ent.Tint.getLeft().G, ent.Tint.getLeft().B, ent.Tran.getLeft());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(-ent.Size / 2, -ent.Size / 2, -ent.Size / 2);
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(-ent.Size / 2, -ent.Size / 2, ent.Size / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(-ent.Size / 2, ent.Size / 2, ent.Size / 2);
+            GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(-ent.Size / 2, ent.Size / 2, -ent.Size / 2);
+            GL.End();
+
+            //Right
+            GL.BindTexture(TextureTarget.Texture2D, ent.Tex.getRight());
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(ent.Tint.getRight().R, ent.Tint.getRight().G, ent.Tint.getRight().B, ent.Tran.getRight());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(ent.Size / 2, -ent.Size / 2, ent.Size / 2);
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(ent.Size / 2, -ent.Size / 2, -ent.Size / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(ent.Size / 2, ent.Size / 2, -ent.Size / 2);
+            GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(ent.Size / 2, ent.Size / 2, ent.Size / 2);
+            GL.End();
+
+
+            GL.PopMatrix();
+        }
+
+        public static void DrawRect(int it, float x, float y, float z, float sizex, float sizey, float sizez, float rotAngle, int[] rotAxis, Texture tRef, Scheme  Tint, Transparency transparancy)
+        {//Creates Rectangular Prism Object
+            //Adjusts object position for centering
+            x += sizex / 2;
+            x *= -1;
+            y += sizey / 2;
+            z += sizez / 2;
+
+            rotAngle *= it;//sets rotation angle
+
+            GL.PushMatrix();
+            GL.Translate(x, y, z);//Moves object
+            GL.Rotate(-rotAngle, rotAxis[0], rotAxis[1], rotAxis[2]);//Rotates object
+
+            //Top
+            GL.BindTexture(TextureTarget.Texture2D, tRef.getTop()); //Get texture
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(Tint.getTop().R, Tint.getTop().G, Tint.getTop().B, transparancy.getTop());//Set color and transparancy
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(-sizex / 2, sizey / 2, sizez / 2);//Create Plane
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(sizex / 2, sizey / 2, sizez / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(sizex / 2, sizey / 2, -sizez / 2);
+            GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(-sizex / 2, sizey / 2, -sizez / 2);
+            GL.End();
+
+            //Bottom
+            GL.BindTexture(TextureTarget.Texture2D, tRef.getBottom());
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(Tint.getBottom().R, Tint.getBottom().G, Tint.getBottom().B, transparancy.getBottom());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(-sizex / 2, -sizey / 2, sizez / 2);
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(-sizex / 2, -sizey / 2, -sizez / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(sizex / 2, -sizey / 2, -sizez / 2);
+            GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(sizex / 2, -sizey / 2, sizez / 2);
+            GL.End();
+
+            //Front
+            GL.BindTexture(TextureTarget.Texture2D, tRef.getFront());
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(Tint.getFront().R, Tint.getFront().G, Tint.getFront().B, transparancy.getFront());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(-sizex / 2, -sizey / 2, sizez / 2);
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(sizex / 2, -sizey / 2, sizez / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(sizex / 2, sizey / 2, sizez / 2);
+            GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(-sizex / 2, sizey / 2, sizez / 2);
+            GL.End();
+
+            //Back
+            GL.BindTexture(TextureTarget.Texture2D, tRef.getBack());
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(Tint.getBack().R, Tint.getBack().G, Tint.getBack().B, transparancy.getBack());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(sizex / 2, -sizey / 2, -sizez / 2);   
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(-sizex / 2, -sizey / 2, -sizez / 2);       
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(-sizex / 2, sizey / 2, -sizez / 2);   
+            GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(sizex / 2, sizey / 2, -sizez / 2);   
+            GL.End();
+
+            //Left
+            GL.BindTexture(TextureTarget.Texture2D, tRef.getLeft());
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(Tint.getLeft().R, Tint.getLeft().G, Tint.getLeft().B, transparancy.getLeft());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(-sizex / 2, -sizey / 2, -sizez / 2);
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(-sizex / 2, -sizey / 2, sizez / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(-sizex / 2, sizey / 2, sizez / 2);
+            GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(-sizex / 2, sizey / 2, -sizez / 2);
+            GL.End();
+
+            //Right
+            GL.BindTexture(TextureTarget.Texture2D, tRef.getRight());
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(Tint.getRight().R, Tint.getRight().G, Tint.getRight().B, transparancy.getRight());
+            GL.TexCoord2(0.0f, 1.0f); GL.Vertex3(sizex / 2, -sizey / 2, sizez / 2);
+            GL.TexCoord2(1.0f, 1.0f); GL.Vertex3(sizex / 2, -sizey / 2, -sizez / 2);
+            GL.TexCoord2(1.0f, 0.0f); GL.Vertex3(sizex / 2, sizey / 2, -sizez / 2);
+            GL.TexCoord2(0.0f, 0.0f); GL.Vertex3(sizex / 2, sizey / 2, sizez / 2);
+            GL.End();
+
+            GL.PopMatrix();
+        }
+
+        public static void BoxScene(int it, OpenTK.Vector3 coor, Texture floor)
+        {//Draws Frame and Floor for a specified area
+            float rotSpeed = 0; //sets the angle of Rotation
+            int[] rotAxis = Main.rotAxis;
+            Transparency TP = Main.TransP[10];
+            Texture texture = Main.Textures[0];
+            Scheme Basic = Main.Colors[0];
+
+            //Base
+            DrawRect(it,
+               .5f, -.5f, .5f,
+                coor.X, 0.1f, 0.1f,
+                rotSpeed, rotAxis,
+                texture, Basic, TP);
+            DrawRect(it,
+                .5f, -.5f, .6f,
+                0.1f, 0.1f, coor.Z - .2f,
+                rotSpeed, rotAxis,
+                texture, Basic, TP);
+            DrawRect(it,
+               .5f, -.5f, coor.Z + .4f,
+                coor.X, 0.1f, 0.1f,
+                rotSpeed, rotAxis,
+                texture, Basic, TP);
+            DrawRect(it,
+                coor.X + .4f, -.5f, .6f,
+                0.1f, 0.1f, coor.Z - .2f,
+                rotSpeed, rotAxis,
+                texture, Basic, TP);
+
+            ////Walls
+            DrawRect(it,
+                .5f, -.5f, .5f,
+                 .1f, coor.Y+.5f, 0.1f,
+                 rotSpeed, rotAxis,
+                texture, Basic, TP);
+            DrawRect(it,
+                 coor.X + .4f, -.5f, .5f,
+                 .1f, coor.Y +.5f, 0.1f,
+                 rotSpeed, rotAxis,
+                texture, Basic, TP);
+            DrawRect(it,
+                .5f, -.5f, coor.Z + .4f,
+                 .1f, coor.Y + .5f, 0.1f,
+                 rotSpeed, rotAxis,
+                texture, Basic, TP);
+            DrawRect(it,
+                 coor.X + .4f, -.5f, coor.Z + .4f,
+                 .1f, coor.Y + .5f, 0.1f,
+                 rotSpeed, rotAxis,
+                texture, Basic, TP);
+
+            //Top
+            DrawRect(it,
+              .5f, coor.Y, .5f,
+               coor.X, 0.1f, 0.1f,
+               rotSpeed, rotAxis,
+               texture, Basic, TP);
+            DrawRect(it,
+                .5f, coor.Y, .6f,
+                0.1f, 0.1f, coor.Z - .2f,
+                rotSpeed, rotAxis,
+                texture, Basic, TP);
+            DrawRect(it,
+               .5f, coor.Y, coor.Z + .4f,
+                coor.X, 0.1f, 0.1f,
+                rotSpeed, rotAxis,
+                texture, Basic, TP);
+            DrawRect(it,
+                coor.X + .4f, coor.Y, .6f,
+                0.1f, 0.1f, coor.Z - .2f,
+                rotSpeed, rotAxis,
+                texture, Basic, TP);
+
+            //BasePlane
+            //DrawRect(it, 0, 0, 0, coor.X, 0, coor.Z, rotSpeed, rotAxis, floor, Basic, TP);
+            
+        }
+        public static void Render()
+        {//Renders the scene
+            // Clear the screen
+            if (!loaded) { return; }
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            // Initialise the model view matrix
+            GL.MatrixMode(MatrixMode.Modelview);
+            GL.LoadIdentity();
+
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            GL.Enable(EnableCap.Blend);
+            // Draw the scene
+            Main.DrawScene();
+
+            GL.Disable(EnableCap.Blend);
+            // Display the new frame
+
+           
+        }
+        public static void Load()
+        {//Loads OpenGL Properties
+            // Setup OpenGL capabilities
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.CullFace);
+            GL.Enable(EnableCap.Texture2D);
+            // Setup background color
+            GL.ClearColor(Color.Black);
+            Main.loadVar();
+        }
+        public static void UpdateImage(int w, int h)
+        {//Updates the current scene image
+
+            if (!loaded) { return; }
+            
+            float aspect = 1;
+
+
+
+
+            // Calculate aspect ratio, checking for divide by zero
+            if (h > 0)
+            {
+                aspect = (float)w / (float)h;
+            }
+
+            // Initialise the projection view matrix
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+
+            // Setup a perspective view
+           
+            float FOVradians = MathHelper.DegreesToRadians(Main.cam.GetZoom());
+            Matrix4 perspective = Main.cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(FOVradians, aspect, 1.0f, 4000.0f);
+            GL.MultMatrix(ref perspective);
+
+            // Set the viewport to the whole window
+            GL.Viewport(0, 0, w, h);
+
+
+        }
+
+    }
+    
+}
+*********************************************ENTITY*****************************
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using OpenTK;
+
+namespace NextGen
+{
+    class Entity
+    {
+        public Vector3 Pos; //Position
+        public String Class; // Class
+        public char Type; //Symbol
+        public double Size; //Size
+        public double rotSpeed; //Rotation Speed
+        public int[] rotAxis; //Rotation Axis
+        public Scheme Tint; //Color Shading
+        public Texture Tex; //Texture
+        public Transparency Tran; //Transparency
+
+        public Entity(Vector3 coor, String clas, char typ, double siz, double rs, int[] ra, Scheme clr, Texture tRef, Transparency Tp)
+        {//CREATE NEW ENTITY
+            Class = clas;
+            Type = typ;
+            Pos = coor;
+            Size = siz;
+            rotSpeed = rs;
+            rotAxis = ra;
+            Tint = clr;
+            Tex = tRef;
+            Tran = Tp;
+        }
+
+        public Entity()
+        {
+        }
+
+        public Entity setClass(String inpt)
+        {//CREATE NEW ENTITY
+            Class = inpt;
+            return this;
+        }
+
+
+        public Entity setPos(Vector3 coor)
+        {//SET THE ENTITIES POSITION
+            Pos = coor;
+            return this;
+        }
+        public Entity Clone()
+        {//DUPLICATE THE ENTITY
+            return new Entity(Pos, Class, Type,
+            Size,
+            rotSpeed,
+            rotAxis,
+            Tint,
+            Tex,
+            Tran);
+            }
+        }
+    }
+
+***************************************CAMERA***********************************using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using OpenTK;
+
+namespace NextGen
+{
+    class Camera
+    {
+        public Vector3 Position;
+        public Vector3 Orientation;
+        public float Speed;
+        public float Sensitivity;
+        public float Zoom;
+        
+
+        public Camera(float xPos, float yPos, float zPos, float xAng, float yAng, float zAng, float zoom, float MoveSpeed, float MouseSpeed)
+        {//CREATE NEW CAMERA
+            Position = new Vector3(xPos, yPos, zPos);
+            Orientation = new Vector3(xAng, yAng, zAng);
+            Speed = MoveSpeed;
+            Sensitivity = MouseSpeed;
+            Zoom = zoom;
+        }
+
+        public float GetZoom()
+        {
+            return Zoom;
+        }
+        public float GetXPos()
+        {
+            return Position.X;
+        }
+        public float GetYPos()
+        {
+            return Position.Y;
+        }
+        public float GetZPos()
+        {
+            return Position.Z;
+        }
+
+        public float GetXAng()
+        {
+            return Orientation.X;
+        }
+        public float GetYAng()
+        {
+            return Orientation.Y;
+        }
+        public float GetZAng()
+        {
+            return Orientation.Z;
+        }
+        public Matrix4 GetViewMatrix()
+        {//Returns target for camera view
+            OpenTK.Vector3 lookat = new OpenTK.Vector3();
+
+            lookat.X = (float)(Math.Sin((float)Orientation.X) * Math.Cos((float)Orientation.Y));
+            lookat.Y = (float)Math.Sin((float)Orientation.Y);
+            lookat.Z = (float)(Math.Cos((float)Orientation.X) * Math.Cos((float)Orientation.Y));
+
+            return Matrix4.LookAt(Position, Position + lookat, OpenTK.Vector3.UnitY);
+        }
+        public void Move(float x, float y, float z)
+        {//Adjusts camera position
+            OpenTK.Vector3 offset = new OpenTK.Vector3();
+
+            OpenTK.Vector3 forward = new OpenTK.Vector3((float)Math.Sin((float)Orientation.X), 0, (float)Math.Cos((float)Orientation.X));
+            OpenTK.Vector3 right = new OpenTK.Vector3(-forward.Z, 0, forward.X);
+
+            offset += x * right;
+            offset += y * forward;
+            offset.Y += z;
+
+            offset.NormalizeFast();
+            offset = OpenTK.Vector3.Multiply(offset, Speed);
+
+            Position += offset;
+        }
+        public void AddRotation(float x, float y)
+        {//Rotates Camera
+            x = x * Sensitivity;
+            y = y * Sensitivity;
+
+            Orientation.X = (Orientation.X + x) % ((float)Math.PI * 2.0f);
+            Orientation.Y = Math.Max(Math.Min(Orientation.Y + y, (float)Math.PI / 2.0f - 0.1f), (float)-Math.PI / 2.0f + 0.1f);
+        }
+    }
+}
+******************************************COOR**********************************
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using OpenTK;
+
+namespace NextGen
+{
+    public static class Coor
+    {//EXTENDS OPENTK.VECTOR3 OBJECT
+        public static Vector3 setXYZ(this Vector3 vec, int x, int y, int z)
+        {//SET X,Y AND Z DIMESIONS
+            vec.X = x;
+            vec.Y = y;
+            vec.Z = z;
+            return vec;
+        }
+
+        public static Vector3 offSet(this Vector3 vec, int x, int y, int z)
+        {//GET A VECTOR3 THAT IS OFFSET FROM THE BASE + 
+            return new Vector3(vec.X + x, vec.Y + y, vec.Z + z);
+        }
+        public static Vector3 offSet(this Vector3 vec, Vector3 tar)
+        {//GET A VECTOR3 THAT IS OFFSET FROM THE BASE +
+            return new Vector3(vec.X + tar.X, vec.Y + tar.Y, vec.Z + tar.Z);
+        }
+        public static Vector3 offSetX(this Vector3 vec, int x, int y, int z)
+        {//GET A VECTOR3 THAT IS OFFSET FROM THE BASE *
+            return new Vector3(vec.X * x, vec.Y * y, vec.Z * z);
+        }
+
+        public static Vector3 switchZY(this Vector3 vec)
+        {//SWITCH Z AND Y COORDINATES
+            float temp = vec.Y;
+            vec.Y = vec.Z;
+            vec.Z = temp;
+            return vec;
+        }
+
+        public static Vector3 distanceTo(this Vector3 vec, Vector3 target)
+        {//RETURN DISTANCE TO ANOTHER COORDINATE
+            return new Vector3(target.X - vec.X, target.Y - vec.Y, target.Z - vec.Z);
+        }
+
+        public static String toString(this Vector3 vec)
+        {//CONVERT TO STRING
+            return ("(" + vec.X + ", " + vec.Y + ", " + vec.Z + ")");
+        }
+
+
+
+        //EXTENDS RANDOM OBJECT
+        public static double NextDouble(this Random random, double minValue, double maxValue)
+        {//CREATE A RANDOM DOUBLE BETWEEN TWO VALUES
+            return random.NextDouble() * (maxValue - minValue) + minValue;
+        }
+    }
+
+}
+

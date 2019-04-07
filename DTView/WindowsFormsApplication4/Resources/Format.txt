@@ -1,0 +1,9 @@
+ - Name								(1)
+ - Symbol							(1)
+Texture   - Top Bottom Left Right Front Back  OR Top + "ALL"	(6) OR (1 + "ALL")
+RotAxis   - X Y Z						(3)
+User sees - Rotspeed Size Transparency Tint			(4)
+Char sees - Density Transparency Scent sound  			(4)
+Benefits  - Food Water Healing					(3)
+Map Render- (L)evel OR (R)andom OR (N) + Height OR Prob./100	(2)
+__

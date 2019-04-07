@@ -1,0 +1,116 @@
+Selection
+_
+Select ALL
+0 0 0 
+0 1 5 0 
+0 5 0 0 
+0 0 0 
+N 0 
+__
+Empty
+#
+Void ALL
+0 0 0 
+0 1 1 0 
+0 9 0 0 
+0 0 0 
+N 0 
+__
+Character
+A
+SSide SSide Slime SSide SSide SSide 
+0 0 0 
+0 1 1 0 
+7 1 5 4 
+0 0 2 
+R 2 
+__
+Dirt
+]
+Dirt ALL
+0 0 0 
+0 1 0 0 
+9 0 1 0 
+0 0 0 
+N 0 
+__
+Grass
+[
+Grass Dirt GDirt GDirt GDirt GDirt 
+0 0 0 
+0 1 0 0 
+9 0 2 1 
+0 0 0 
+N 0 
+__
+Stone
+S
+Stone ALL
+0 0 0 
+0 1 0 0 
+9 0 1 0 
+0 0 0 
+N 0 
+__
+Dark_Stone
+D
+DStone ALL
+0 0 0 
+0 1 0 0 
+9 0 1 0 
+0 0 0 
+N 0 
+__
+Sand
+:
+Sand ALL
+0 0 0 
+0 1 0 0 
+9 0 1 0 
+0 0 0 
+N 0 
+__
+Log
+T
+TRings Trings Trunk Trunk Trunk Trunk 
+0 0 0 
+0 1 0 0 
+9 0 3 0 
+0 1 0 
+R 5 
+__
+Leaves
+L
+Leaves ALL
+0 0 0 
+0 1 2 0 
+6 5 3 2 
+9 2 0 
+R 30 
+__
+Clouds
+C
+Cloud ALL
+0 0 0 
+0 1 8 0 
+1 9 0 0 
+0 1 0 
+N 0 
+__
+Water
+~
+Water ALL
+0 0 0 
+0 1 5 0 
+3 7 2 2 
+0 9 0 
+L 5 
+__
+Lava
+!
+Lava ALL
+0 0 0 
+0 1 0 0 
+4 1 4 0 
+0 -5 -9 
+L 2 
